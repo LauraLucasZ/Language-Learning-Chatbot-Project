@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once __DIR__ . '/../db/dbh.inc.php';
+require_once __DIR__ . '/../model/loginModel.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Sign Up
@@ -16,17 +16,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $loginEmail = htmlspecialchars($_POST['loginEmail']);
         $loginPassword = $_POST['loginPassword'];
 
-        // Query to find the user by email
-        $sql = "SELECT * FROM users WHERE email='$loginEmail'";
-        $result = mysqli_query($conn, $sql);
+        // Use loginModel to validate user
+        $user = getUserByEmail($loginEmail);
 
-        if (mysqli_num_rows($result) > 0) {
-            $user = mysqli_fetch_assoc($result);
-
+        if ($user) {
             // Verify password
             if (password_verify($loginPassword, $user['password'])) {
-                // Check the user's role
-
+                // Set session variables
                 $_SESSION['userId'] = $user['Id']; 
                 $_SESSION['firstName'] = $user['firstName']; 
                 $_SESSION['lastName'] = $user['lastName'];
@@ -37,8 +33,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['profileImage'] = $user['profileImage'];
                 $_SESSION['confirmPassword'] = $user['confirmPassword'];
                 $_SESSION['score'] = $user['score'];  
-                $_SESSION['difficulty_level'] = $user['difficulty_level'];                
-              
+                $_SESSION['difficulty_level'] = $user['difficulty_level'];
+
                 // Redirect based on role
                 switch ($user['role']) {
                     case 'student':
@@ -62,4 +58,3 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
-?>
