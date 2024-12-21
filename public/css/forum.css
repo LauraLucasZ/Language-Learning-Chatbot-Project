@@ -2029,3 +2029,15 @@ hr {
     color: white;
 }
 
+.ques-icon-info3293 {
+    display: flex;
+    align-items: center;
+}
+
+.ques-icon-info3293 form {
+    margin-right: 15px; /* Adds space between like button and other elements */
+}
+
+.ques-icon-info3293 a {
+    margin-right: 15px; /* Adds space between the icons */
+}

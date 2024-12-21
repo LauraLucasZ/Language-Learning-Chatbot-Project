@@ -22,5 +22,13 @@ class forumController {
         return $this->forumModel->getUserQuestions($userId);
     }
     
+    public function likePost($postId) {
+        // Increment the likes count in the database for the specific post
+        $this->forumModel->increaseLikes($postId);
+
+        header("Location: ../public/forum.php#$postId");
+        exit();
+    }
+    
 }
 ?>

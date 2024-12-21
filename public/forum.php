@@ -15,6 +15,10 @@ $topUsers = $forumModel->getTopUsers();
 $sessionUserId = $_SESSION['userId']; // Assuming user is logged in and session contains user_id
 $userQuestions = $forumController->loadUserQuestions($sessionUserId);
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like_post_id'])) {
+    $forumController->likePost($_POST['like_post_id']);
+}
+
 function timeAgo($datetime) {
     $time = strtotime($datetime);
     $timeDiff = time() - $time;
@@ -47,9 +51,12 @@ function timeAgo($datetime) {
     <meta name="language" content="English">
     <title>Ask Me</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <link href="../public/css/forum.css" rel="stylesheet" type="text/css">
+    <link href="../public/css/forum.css?v=1.0" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
+    <style>
+
+        </style>
 <body>
     <!--======== Navbar =======-->
     <div class="top-bar">
@@ -163,18 +170,24 @@ function timeAgo($datetime) {
                                                     <p><?php echo htmlspecialchars($question['content']); ?></p>
                                                 </div>
                                                 <hr>
-                                                <div class="ques-icon-info3293">
-                                                    <a href="#"><i class="fa fa-star" aria-hidden="true"> 0 </i></a>
-                                                    <a href="#"><i class="fa fa-folder" aria-hidden="true"> <?php echo htmlspecialchars($question['category']); ?></i></a>
-                                                    <a href="#"><i class="fa fa-clock-o" aria-hidden="true"> <?php echo timeAgo($question['created_at']); ?></i></a>
-                                                    <a href="#" class="toggle-comment"><i class="fa fa-question-circle-o" aria-hidden="true"> Comment</i></a>
+                                                    <div class="ques-icon-info3293">
+                                                                                                    
+                                                <span><?php echo $question['likes']; ?></span>
+                                                <form method="POST" class="like-form" id="like-form-<?php echo $question['post_id']; ?>">
+                                                <input type="hidden" name="like_post_id" value="<?php echo $question['post_id']; ?>">
+                                                <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                                    <i class="fa fa-star" aria-hidden="true"></i> Like
+                                                </button>
+                                            </form>
+                                                <a href="#"><i class="fa fa-folder" aria-hidden="true"> <?php echo htmlspecialchars($question['category']); ?></i></a>
+                                                <a href="#"><i class="fa fa-clock-o" aria-hidden="true"> <?php echo timeAgo($question['created_at']); ?></i></a>
+                                                <a href="#" class="toggle-comment"><i class="fa fa-question-circle-o" aria-hidden="true"> Comment</i></a>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
                                             <div class="ques-type302">
                                                 <button type="button" class="q-type238"><i class="fa fa-comment" aria-hidden="true"></i></button>
-                                                <button type="button" class="q-type23 button-ques2973"><i class="fa fa-user-circle-o" aria-hidden="true"> 0 views</i></button>
                                             </div>
                                         </div>
                                     </div>
@@ -237,17 +250,22 @@ function timeAgo($datetime) {
                         </div>
                         <hr>
                         <div class="ques-icon-info3293">
-                            <a href="#"><i class="fa fa-star" aria-hidden="true"> 0 </i></a>
-                            <a href="#"><i class="fa fa-folder" aria-hidden="true"> <?php echo htmlspecialchars($question['category']); ?></i></a>
-                            <a href="#"><i class="fa fa-clock-o" aria-hidden="true"> <?php echo timeAgo($question['created_at']); ?></i></a>
-                            <a href="#" class="toggle-comment"><i class="fa fa-question-circle-o" aria-hidden="true"> Comment</i></a>
-                        </div>
+                                <span><?php echo $question['likes']; ?></span> <!-- Display the likes count -->
+                                <form method="POST" class="like-form" id="like-form-<?php echo $question['post_id']; ?>">
+                                    <input type="hidden" name="like_post_id" value="<?php echo $question['post_id']; ?>">
+                                    <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                        <i class="fa fa-star" aria-hidden="true"></i> Like
+                                    </button>
+                                </form>
+                                <a href="#"><i class="fa fa-folder" aria-hidden="true"> <?php echo htmlspecialchars($question['category']); ?></i></a>
+                                                <a href="#"><i class="fa fa-clock-o" aria-hidden="true"> <?php echo timeAgo($question['created_at']); ?></i></a>
+                                                <a href="#" class="toggle-comment"><i class="fa fa-question-circle-o" aria-hidden="true"> Comment</i></a>
+    </div>
                     </div>
                 </div>
                 <div class="col-md-2">
                     <div class="ques-type302">
                         <button type="button" class="q-type238"><i class="fa fa-comment" aria-hidden="true"></i></button>
-                        <button type="button" class="q-type23 button-ques2973"><i class="fa fa-user-circle-o" aria-hidden="true"> 0 views</i></button>
                     </div>
                 </div>
             </div>
@@ -351,6 +369,8 @@ function timeAgo($datetime) {
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="js/npm.js"></script>
+
+    
 </body>
 
 </html>

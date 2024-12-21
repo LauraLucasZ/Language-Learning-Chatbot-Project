@@ -62,3 +62,32 @@ function showSlides() {
     slides[slideIndex-1].style.display = "block";  
     setTimeout(showSlides, 5000); // Change content every 5 seconds
 }
+
+$(document).ready(function() {
+    $('.like-button').on('click', function(e) {
+        e.preventDefault();
+
+        var postId = $(this).data('post-id');
+        var likeCountElement = $(this).find('.like-count');
+        var currentLikeCount = parseInt(likeCountElement.text());
+
+        $.ajax({
+            url: 'forumController.php',
+            type: 'POST',
+            data: {
+                action: 'likePost',
+                post_id: postId
+            },
+            success: function(response) {
+                var data = JSON.parse(response);
+                if (data.success) {
+                    if (data.liked) {
+                        likeCountElement.text(currentLikeCount + 1);
+                    } else {
+                        likeCountElement.text(currentLikeCount - 1);
+                    }
+                }
+            }
+        });
+    });
+});
