@@ -1,6 +1,27 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 include '../Language-Learning-Chatbot/controllers/restrict.php';
-restrictPageAccess('admin', '../public/home.php'); // Redirect non-admin users to home page
+restrictPageAccess('admin', '../public/home.php'); // Ensures only admins can access
+
+
+$conn = mysqli_connect($servername, $username, $password, $dbname);
+
+if (!$conn) {
+    die("Connection failed: " . mysqli_connect_error());
+}
+
+$sql = "SELECT Id, username, score FROM users WHERE role = 'student'";
+$result = mysqli_query($conn, $sql);
+$users = [];
+
+if (mysqli_num_rows($result) > 0) {
+    while ($row = mysqli_fetch_assoc($result)) {
+        $users[] = $row;
+    }
+}
+mysqli_close($conn);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,8 +31,10 @@ restrictPageAccess('admin', '../public/home.php'); // Redirect non-admin users t
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gamification Elements Dashboard</title>
-    <!-- ======= Styles ====== -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <link rel="stylesheet" href="../public/css/styleadmin.css">
+    <link rel="stylesheet" href="../public/css/admintable.css">
+</head>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link rel="stylesheet" href="../public/css/styleadmin.css">
     
     <link rel="stylesheet" href="../public/css/admintable.css">
@@ -110,12 +133,8 @@ restrictPageAccess('admin', '../public/home.php'); // Redirect non-admin users t
             cursor: pointer;
         }
     </style>
-</head>
-
 <body>
-    <!-- =============== Navigation ================ -->
     <?php include "../Language-Learning-Chatbot/views/partials/adminnavbar.php"; ?>
-    <!------------------------------ Gamification Section ---------------------------->
     <section>
         <div class="dashboard">
             <h2>Gamification Elements</h2>
@@ -124,70 +143,28 @@ restrictPageAccess('admin', '../public/home.php'); // Redirect non-admin users t
                     <tr>
                         <th>User Name</th>
                         <th>User ID</th>
-                        <th>Chosen Gamification</th>
-                        <th>Actions</th>
+                        <th>Score</th>
                     </tr>
                 </thead>
-                <tbody id="gamification-list">
-                    <tr>
-                        <td>John Doe</td>
-                        <td>1</td>
-                        <td>Quizzes, Badges</td>
-                        <td><button onclick="showScore(1)">Show Score</button></td>
-                    </tr>
-                    <tr>
-                        <td>Jane Smith</td>
-                        <td>2</td>
-                        <td>Challenges, Rewards</td>
-                        <td><button onclick="showScore(2)">Show Score</button></td>
-                    </tr>
-                    <tr>
-                        <td>Michael Johnson</td>
-                        <td>3</td>
-                        <td>Quizzes, Challenges</td>
-                        <td><button onclick="showScore(3)">Show Score</button></td>
-                    </tr>
-                    <tr>
-                        <td>Emily Davis</td>
-                        <td>4</td>
-                        <td>Rewards</td>
-                        <td><button onclick="showScore(4)">Show Score</button></td>
-                    </tr>
-                    <tr>
-                        <td>James Brown</td>
-                        <td>5</td>
-                        <td>Badges, Challenges</td>
-                        <td><button onclick="showScore(5)">Show Score</button></td>
-                    </tr>
+                <tbody>
+                    <?php foreach ($users as $user) : ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($user['username']); ?></td>
+                            <td><?php echo htmlspecialchars($user['Id']); ?></td>
+                            <td><?php echo htmlspecialchars($user['score']); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
 
-        <!-- Modal for Scores -->
-        <div id="scoreModal" class="modal">
-            <div class="modal-content">
-                <span class="close" id="closeScoreModal">&times;</span>
-                <h2>User Score</h2>
-                <div id="score-display"></div>
-            </div>
-        </div>
+       
     </section>
 
-    <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script>
-    <script src="../public/js/adminmainjs.js"></script>
-
     <script>
-        const scores = {
-            1: 85,
-            2: 92,
-            3: 78,
-            4: 88,
-            5: 94,
-        };
-
-        function showScore(userId) {
+        function showScore(userId, score) {
             const scoreDisplay = document.getElementById('score-display');
-            scoreDisplay.innerHTML = `Score for User ID ${userId}: ${scores[userId]}`;
+            scoreDisplay.innerHTML = `Score for User ID ${userId}: ${score}`;
             document.getElementById('scoreModal').style.display = 'block';
         }
 
@@ -202,6 +179,9 @@ restrictPageAccess('admin', '../public/home.php'); // Redirect non-admin users t
             }
         }
     </script>
+        <script src="https://cdn.jsdelivr.net/npm/ionicons@5.5.2/dist/ionicons.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../public/js/adminmainjs.js"></script>
 </body>
 
 </html>

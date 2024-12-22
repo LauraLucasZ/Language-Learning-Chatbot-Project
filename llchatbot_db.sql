@@ -3,9 +3,11 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
+
 -- Generation Time: Dec 22, 2024 at 12:43 AM
 -- Server version: 10.4.28-MariaDB
 -- PHP Version: 8.2.4
+
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -102,6 +104,10 @@ CREATE TABLE `chatmessages` (
   `timestamp` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `chatmessages`
+--
+
 -- --------------------------------------------------------
 
 --
@@ -115,11 +121,10 @@ CREATE TABLE `chats` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
--- --------------------------------------------------------
+--
+-- Dumping data for table `chats`
+--
 
---
--- Table structure for table `forum_comments`
---
 
 CREATE TABLE `forum_comments` (
   `comment_id` int(11) NOT NULL,
@@ -168,6 +173,7 @@ CREATE TABLE `forum_posts` (
   `likes` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+
 -- --------------------------------------------------------
 
 --
@@ -207,6 +213,7 @@ CREATE TABLE `quiz_questions` (
 --
 -- Dumping data for table `quiz_questions`
 --
+
 
 INSERT INTO `quiz_questions` (`question_id`, `question_text`, `question_type`, `option_a`, `option_b`, `option_c`, `option_d`, `correct_answer`, `difficulty_level`, `language_category`, `points`, `activity_id`)
 VALUES
@@ -281,6 +288,7 @@ VALUES
 (59, 'La littérature classique est souvent étudiée à l\'école.', 'true/false', 'Vrai', 'Faux', '', '', 'Vrai', 'Advanced', 'French', 20, 5),
 (60, 'La philosophie explore des questions profondes sur la vie.', 'true/false', 'Vrai', 'Faux', '', '', 'Vrai', 'Advanced', 'French', 20, 5);
 
+
 -- --------------------------------------------------------
 
 --
@@ -303,8 +311,22 @@ CREATE TABLE `users` (
   `profileImage` text NOT NULL,
   `progress` int(11) NOT NULL,
   `postsCount` int(11) NOT NULL,
-  `difficulty_level` varchar(20) NOT NULL
+  `difficulty_level` varchar(20) NOT NULL,
+  `focus_area` varchar(50) NOT NULL,
+  `personal_interests` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`Id`, `username`, `email`, `password`, `confirmPassword`, `firstName`, `lastName`, `gender`, `role`, `language`, `score`, `profileImage`, `progress`, `postsCount`, `difficulty_level`, `focus_area`, `personal_interests`) VALUES
+(1, 'aya22', 'aya22@miu.com', '$2y$10$Musvv2Orx.yGM1A37dnQTe6F2UyE1ILQkYUDNgGH3buGLfjslTOAe', '$2y$10$5yV3AhuezyNaSGqMaJJYm.lEyj3wLiJP7S6OMbrbLwtwojk5JocZ6', 'aya', 'hisham', 'female', 'student', 'French', '0', '../public/images/user.png', 0, 0, 'Beginner', '', ''),
+(2, 'admin_user', 'admin2@example.com', '$2y$10$sD7ggOVVdySH/doShNoaS..hCSfbdsPOSykvD.tJYqhGF9vnlvPi.', '12345Admin2*', 'Admin', 'User', 'male', 'admin', 'English', '0', '', 0, 0, 'beginner', '', ''),
+(3, 'asel', 'asel@m.com', '$2y$10$ClDlbPnnmwn43WB/FLAT7O96RTOUmG5U0.7RigGn91kEC3k5qWupi', '$2y$10$vgVLSoWTRPc.nvJaICSosu3kbyZdjXkWHwyJQczRg/d0GBu3jrKB.', 'asel', 'hisham', 'female', 'student', 'German', '0', '../public/images/user.png', 0, 0, 'Beginner', '', ''),
+(4, 'pinar3', 'pinar3@m.com', '$2y$10$6VEBXYwsfewrafW7/ydD7OQ4VuxysTspslkxNUGbbJm2HOiZRYkwO', '', 'Admin', 'User', '', 'student', 'English', '', '../public/images/user.png', 0, 0, '', '', ''),
+(6, 'lolo123', 'laura@gmail.com', '$2y$10$vEn9uJDwtMK1Pk9d96GQYO9eHIypu5FXUP/zUCNgORx4z9hvH4p3u', '$2y$10$pWfvpMAGniq.6WUwH.lbzuX9f8w2WDe2MkbTZqBq8G1VM0b0UxYQ2', 'laura', 'lucas', 'female', 'student', 'Mandarin', '0', '../public/images/user.png', 0, 0, 'advanced', 'vocabulary', ''),
 
 
 -- --------------------------------------------------------
@@ -396,21 +418,6 @@ ALTER TABLE `chats`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `forum_comments`
---
-ALTER TABLE `forum_comments`
-  ADD PRIMARY KEY (`comment_id`),
-  ADD KEY `post_id` (`post_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
--- Indexes for table `forum_posts`
---
-ALTER TABLE `forum_posts`
-  ADD PRIMARY KEY (`post_id`),
-  ADD KEY `user_id` (`user_id`);
-
---
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -425,25 +432,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `chatmessages`
 --
 ALTER TABLE `chatmessages`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `chats`
 --
 ALTER TABLE `chats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `forum_comments`
---
-ALTER TABLE `forum_comments`
-  MODIFY `comment_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `forum_posts`
---
-ALTER TABLE `forum_posts`
-  MODIFY `post_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 
 --
@@ -451,7 +446,7 @@ ALTER TABLE `forum_posts`
 --
 
 ALTER TABLE `users`
-  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `Id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 
 --

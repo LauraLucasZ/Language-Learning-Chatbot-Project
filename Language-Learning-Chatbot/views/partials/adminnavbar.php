@@ -60,6 +60,14 @@
                         <span class="title">view Gamifications</span>
                     </a>
                 </li>
+                <li>
+                    <a href="adminlearningpath.php">
+                        <span class="icon">
+                        <ion-icon name="compass-outline"></ion-icon>
+                        </span>
+                        <span class="title">learning path</span>
+                    </a>
+                </li>
 
                 <li>
                     <a href="index.php">
