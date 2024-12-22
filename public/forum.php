@@ -58,45 +58,45 @@ function timeAgo($datetime) {
 
         </style>
 <body>
-    <!--======== Navbar =======-->
-    <div class="top-bar">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="navbar-serch-right-side">
-                        <!-- <form class="navbar-form" role="search">
-                            <div class="input-group add-on">
-                                <input class="form-control form-control222" placeholder="Search" id="srch-term" type="text">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-default btn-default2913" type="button"><i class="glyphicon glyphicon-search"></i></button>
-                                </div>
-                            </div>
-                        </form> -->
-                    </div>
-                </div>
+<!--======== Navbar =======-->
+<div class="top-bar">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Back button with conditional logic based on user role -->
+                <button type="button" style="background-color:#5b428f; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; transition: transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 10px rgba(255, 255, 255, 0.6)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';" onclick="goBack()">
+                    <span class="glyphicon glyphicon-arrow-left" style="margin-right: 5px;"></span> Back
+                </button>
             </div>
         </div>
     </div>
-    
-    
+</div>
+
     <!-- ==========header mega navbar=======-->
-    <div class="top-menu-bottom932">
-        <nav class="navbar navbar-default">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"> <span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button>
-                    <a class="navbar-brand" href="#"><img src="./images/logo.png" alt="Logo"></a>
-                </div>
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                    <ul class="nav navbar-nav"> </ul>
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="../public/forum.php">Home</a></li>
-                        <li><a href="../public/askQuestion.php">Ask Question</a></li>
-                        <li><a href="../public/resources.php">Resources</a></li>
-                </div>
+<div class="top-menu-bottom932">
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false"> 
+                    <span class="sr-only">Toggle navigation</span> 
+                    <span class="icon-bar"></span> 
+                    <span class="icon-bar"></span> 
+                    <span class="icon-bar"></span> 
+                </button>
+                <a class="navbar-brand" href="#"><img src="./images/logo.png" alt="Logo"></a>
             </div>
-        </nav>
-    </div>
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <ul class="nav navbar-nav"> </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="../public/forum.php">Home</a></li>
+                    <li><a href="../public/askQuestion.php">Ask Question</a></li>
+                    <li><a href="../public/resources.php">Resources</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</div>
+
    
 
 <section class="welcome-part-one">
@@ -370,7 +370,17 @@ function timeAgo($datetime) {
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="js/npm.js"></script>
 
-    
+    <script>
+function goBack() {
+    // Check if the user's role is 'tutor' from the session
+    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'tutor'): ?>
+        window.location.href = 'login.php'; // Redirect to login page for tutor
+    <?php else: ?>
+        window.location.href = 'home.php'; // Redirect to forum.php (home page)
+    <?php endif; ?>
+}
+</script>
+
 </body>
 
 </html>

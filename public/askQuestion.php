@@ -53,25 +53,20 @@ $topUsers = $forumModel->getTopUsers();
 </style>
 
 <body>
-    <div class="top-bar">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="navbar-serch-right-side">
-                        <form class="navbar-form" role="search">
-                            <div class="input-group add-on">
-                                <input class="form-control form-control222" placeholder="Search" name="srch-term" id="srch-term" type="text">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-default btn-default2913" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-               
-                </div>
+<!--======== Navbar =======-->
+<div class="top-bar">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Back button with conditional logic based on user role -->
+                <button type="button" style="background-color:#5b428f; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; transition: transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 10px rgba(255, 255, 255, 0.6)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';" onclick="goBack()">
+                    <span class="glyphicon glyphicon-arrow-left" style="margin-right: 5px;"></span> Back
+                </button>
             </div>
         </div>
     </div>
+</div>
+
     <div class="top-menu-bottom932">
         <nav class="navbar navbar-default">
             <div class="container">
@@ -191,6 +186,17 @@ $topUsers = $forumModel->getTopUsers();
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
       <script src="../public/js/askQuestion.js"></script>
   
+      <script>
+function goBack() {
+    // Check if the user's role is 'tutor' from the session
+    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'tutor'): ?>
+        window.location.href = 'login.php'; // Redirect to login page for tutor
+    <?php else: ?>
+        window.location.href = 'home.php'; // Redirect to forum.php (home page)
+    <?php endif; ?>
+}
+</script>
+
 </body>
 
 </html>
