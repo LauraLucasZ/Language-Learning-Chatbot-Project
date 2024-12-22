@@ -46,7 +46,7 @@ include_once "../Language-Learning-Chatbot/controllers/learningpathcontroller.ph
 <body>
 <div class="container" style="padding-right: 0px; padding-left: 0px;">
     <?php include "../Language-Learning-Chatbot/views/partials/navbar.php"; ?>
-    <div class="main-content">
+    <div class="main-content" style="display: block;">
         <div class="title-strip" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 60px; background-color: #4D1193;">
             <h6 class="mb-3" style="color:white; margin: 10px; text-align:center; font-weight: bold;">Customize Your Learning Path</h6>
         </div>
