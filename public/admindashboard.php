@@ -1,6 +1,10 @@
 <?php
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 include '../Language-Learning-Chatbot/controllers/restrict.php';
-restrictPageAccess('admin', '../public/home.php'); // Redirect non-admin users to home page
+restrictPageAccess('admin', '../public/home.php'); // Ensures only admins can access
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

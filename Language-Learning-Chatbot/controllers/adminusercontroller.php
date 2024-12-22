@@ -1,99 +1,140 @@
 <?php
-
-
-session_start();
-
-include_once(__DIR__ . '/../db/dbh.inc.php');
-
+// UserManager.php
 
 class UserManager {
-    private $conn;
+    protected $conn;
 
-    public function __construct($dbConnection) {
-        $this->conn = $dbConnection;
+    public function __construct($conn) {
+        $this->conn = $conn;
     }
-
-    public function addUser($username, $email, $role, $language, $password) {
-        $sql = "INSERT INTO users (username, email, password, role, language) 
-                VALUES ('$username', '$email', '$password', '$role', '$language')";
-        
-        if ($this->conn->query($sql) === TRUE) {
-            return "New user added successfully";
+    public function addUser($data) {
+        $error = '';
+        $firstName = htmlspecialchars($data['first_name']);
+        $lastName = htmlspecialchars($data['last_name']);
+        $email = htmlspecialchars($data['email']);
+        $username = htmlspecialchars($data['username']);
+        $password = htmlspecialchars($data['password']);
+        $confirmPassword = htmlspecialchars($data['confirm_password']);
+        $role = htmlspecialchars($data['role']);
+        $language = htmlspecialchars($data['language']);
+        $gender = htmlspecialchars($data['gender']);
+        $defaultProfileImage = '../public/images/user.png';
+    
+        $sql = "SELECT * FROM users WHERE username='$username' OR email='$email'";
+        $result = mysqli_query($this->conn, $sql);
+    
+        if (mysqli_num_rows($result) == 0) {
+            if ($password === $confirmPassword) {
+                $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+                $sql = "INSERT INTO users 
+                        (username, email, password, firstName, lastName, role, language, gender, profileImage, score, difficulty_level) 
+                        VALUES 
+                        ('$username', '$email', '$passwordHash', '$firstName', '$lastName', '$role', '$language', '$gender', '$defaultProfileImage', 0, 'Beginner')";
+                if (mysqli_query($this->conn, $sql)) {
+                    $error = 'User added successfully!';
+                } else {
+                    $error = 'Error adding user: ' . mysqli_error($this->conn);
+                }
+            } else {
+                $error = 'Passwords do not match.';
+            }
         } else {
-            return "Error: " . $this->conn->error;
+            $error = 'Username or email already exists.';
         }
+    
+        return $error;
     }
+    
 
-    public function editUser($id, $username, $email, $role, $language, $password) {
-        if (!empty($password)) {
-            $sql = "UPDATE users SET username='$username', email='$email', role='$role', language='$language', password='$password' WHERE Id='$id'";
+    public function editUser($data) {
+        $error = '';
+        $id = $data['id'];
+        $firstName = htmlspecialchars($data['first_name']);
+        $lastName = htmlspecialchars($data['last_name']);
+        $username = htmlspecialchars($data['username']);
+        $email = htmlspecialchars($data['email']);
+        $role = htmlspecialchars($data['role']);
+        $language = htmlspecialchars($data['language']);
+        $password = htmlspecialchars($data['password']);
+        $confirmPassword = htmlspecialchars($data['confirm_password']);
+
+        $sql = "SELECT * FROM users WHERE (username='$username' OR email='$email') AND Id != '$id'";
+        $result = mysqli_query($this->conn, $sql);
+
+        if (mysqli_num_rows($result) == 0) {
+            if (!empty($password) && !empty($confirmPassword)) {
+                if ($password === $confirmPassword) {
+                    $passwordHash = password_hash($password, PASSWORD_DEFAULT);
+                    $sql = "UPDATE users SET username='$username', email='$email', password='$passwordHash', firstName='$firstName', lastName='$lastName', role='$role', language='$language' WHERE Id='$id'";
+                } else {
+                    $error = 'Passwords do not match.';
+                }
+            } else {
+                $sql = "UPDATE users SET username='$username', email='$email', firstName='$firstName', lastName='$lastName', role='$role', language='$language' WHERE Id='$id'";
+            }
+
+            if (mysqli_query($this->conn, $sql)) {
+                $error = 'User updated successfully!';
+            } else {
+                $error = 'Error updating user: ' . mysqli_error($this->conn);
+            }
         } else {
-            $sql = "UPDATE users SET username='$username', email='$email', role='$role', language='$language' WHERE Id='$id'";
+            $error = 'Username or email already exists.';
         }
 
-        if ($this->conn->query($sql) === TRUE) {
-            return "User updated successfully";
-        } else {
-            return "Error: " . $this->conn->error;
-        }
+        return $error;
     }
 
     public function removeUser($id) {
         $sql = "DELETE FROM users WHERE Id='$id'";
-        
-        if ($this->conn->query($sql) === TRUE) {
-            return "User removed successfully";
-        } else {
-            return "Error: " . $this->conn->error;
+        if (!mysqli_query($this->conn, $sql)) {
+            die("Error removing user: " . mysqli_error($this->conn));
         }
+        return true;
     }
 
     public function fetchUsers() {
         $sql = "SELECT * FROM users";
-        $result = $this->conn->query($sql);
-        $users = [];
-        
-        if ($result->num_rows > 0) {
-            while ($row = $result->fetch_assoc()) {
-                $users[] = $row;
-            }
+        $result = mysqli_query($this->conn, $sql);
+        if (!$result) {
+            die("Error fetching users: " . mysqli_error($this->conn));
         }
-        return $users;
+        return mysqli_fetch_all($result, MYSQLI_ASSOC);
     }
 }
 
-$userManager = new UserManager($conn);
-$message = ""; // Variable to store message
+abstract class UserManagerDecorator {
+    protected $userManager;
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['addUser'])) {
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $role = $_POST['role'];
-        $language = $_POST['language'];
-
-        $password = isset($_POST['password']) ? $_POST['password'] : '';
-
-        $message = $userManager->addUser($username, $email, $role, $language, $password);
-    } elseif (isset($_POST['editUser'])) {
-        $id = $_POST['id'];
-        $username = $_POST['username'];
-        $email = $_POST['email'];
-        $role = $_POST['role'];
-        $language = $_POST['language'];
-
-        $password = isset($_POST['password']) ? $_POST['password'] : ''; // Check if password is set
-
-        $message = $userManager->editUser($id, $username, $email, $role, $language, $password);
-    } elseif (isset($_POST['removeUser'])) {
-        $id = $_POST['id'];
-        $message = $userManager->removeUser($id);
+    public function __construct(UserManager $userManager) {
+        $this->userManager = $userManager;
     }
+
+    abstract public function addUser($data);
+    abstract public function editUser($data);
+    abstract public function removeUser($id);
+    abstract public function fetchUsers();
 }
 
-$users = $userManager->fetchUsers();
-$conn->close();
+// Concrete decorator for logging
+class LoggingUserManagerDecorator extends UserManagerDecorator {
+    public function addUser($data) {
+        error_log("Adding user: " . $data['username']);
+        return $this->userManager->addUser($data);
+    }
 
+    public function editUser($data) {    
+        error_log("Editing user: " . $data['username']);
+        return $this->userManager->editUser($data);
+    }
+
+    public function removeUser($id) {
+        error_log("Removing user with ID: " . $id);
+        return $this->userManager->removeUser($id);
+    }
+
+    public function fetchUsers() {
+        return $this->userManager->fetchUsers();
+    }
+}
 ?>
-
-

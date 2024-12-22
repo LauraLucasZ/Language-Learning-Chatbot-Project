@@ -1,6 +1,32 @@
+<?php
+session_start();
+
+// Initialize the variables to avoid "undefined variable" warnings
+$difficulty = $_SESSION['difficulty'] ?? '';  
+$focusArea = $_SESSION['focusArea'] ?? '';
+$personalInterests = $_SESSION['personalInterests'] ?? '';
+$language = $_SESSION['language'] ?? '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Get data from POST
+    $difficulty = $_POST['difficulty'] ?? '';
+    $focusArea = $_POST['focusArea'] ?? '';
+    $personalInterests = $_POST['personalInterests'] ?? '';
+    $language = $_POST['languages'] ?? '';
+
+    $_SESSION['difficulty'] = $difficulty;
+    $_SESSION['focusArea'] = $focusArea;
+    $_SESSION['personalInterests'] = $personalInterests;
+    $_SESSION['language'] = $language;
+
+    $_SESSION['update_message'] = 'Your learning path has been updated successfully!';
+}
+include_once "../Language-Learning-Chatbot/controllers/learningpathcontroller.php";
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,249 +34,119 @@
     <link rel="stylesheet" href="./css/Stylehome.css">
     <link rel="stylesheet" href="./css/styleuserprofile.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-        }
-
-
-.form-check-input {
-    width: 20px; 
-    height: 20px;
-    margin-top: 0.3rem;
-    cursor: pointer;
-    position: relative;
-    appearance: none; 
-    border: 2px solid #4D1193; 
-    border-radius: 5px;
-    background-color: #ffffff;
-    transition: background-color 0.3s, border-color 0.3s;
-}
-
-.form-check-input:checked {
-    background-color: #4D1193; 
-    border-color: #4D1193; 
-}
-
-.form-check-input:checked::after {
-    content: '\2713'; 
-    position: absolute;
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-    left: 3px;
-    top: -2px;
-}
-
-.form-check-input:hover {
-    border-color: #3d0f73; 
-    box-shadow: 0 0 5px rgba(77, 17, 147, 0.5); 
-}
-
-
-        .form-group label {
-            font-weight: bold;
-            color: #4D1193;
-        }
-
-        .btn-primary {
+        .title-strip {
             background-color: #4D1193;
-            border: 1px solid #4D1193;
-        }
-
-        .btn-primary:hover {
-            background-color: #3d0f73;
-            border-color: #3d0f73;
-        }
-
-        .form-icon {
-            position: absolute;
-            margin: 10px;
-            color: #4D1193;
-        }
-
-        .form-control {
-            padding-left: 40px; 
-        }
-
-        .form-group {
-            position: relative; 
-        }
-
-     
-        .modal-content {
-            border-radius: 10px;
+            height: 30px;
+            width: 100%;
+            margin-bottom: 20px;
         }
     </style>
 </head>
-
 <body>
-    <div class="container" style="padding-right: 0px; padding-left: 0px;">
+<div class="container" style="padding-right: 0px; padding-left: 0px;">
     <?php include "../Language-Learning-Chatbot/views/partials/navbar.php"; ?>
-        <div class="main-content" style="align-items:center; width:80%;">
+    <div class="main-content">
+        <div class="title-strip" style="display: flex; justify-content: center; align-items: center; width: 100%; height: 60px; background-color: #4D1193;">
+            <h6 class="mb-3" style="color:white; margin: 10px; text-align:center; font-weight: bold;">Customize Your Learning Path</h6>
+        </div>
+
+        <form action="../public/learningpath.php" method="POST">
             <div class="row gutters">
-
-                <div class="col-xl-9 col-lg-9 col-md-12 col-sm-12 col-12">
-                    <div class="card h-100">
-                        <div class="card-body">
-
-                            <!-- Customizable Language Learning Path Section -->
-                            <div class="row gutters">
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <h6 class="mb-2" style="color:white;  background:#4D1193; text-align:center;          margin:10px;padding:10px;  font-size:larger;">Customize Your Learning Path</h6>
-                                </div>
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <label>Difficulty Level</label><br>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="beginner" id="difficultyBeginner">
-                                            <label class="form-check-label" for="difficultyBeginner">Beginner</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="intermediate" id="difficultyIntermediate">
-                                            <label class="form-check-label" for="difficultyIntermediate">Intermediate</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="advanced" id="difficultyAdvanced">
-                                            <label class="form-check-label" for="difficultyAdvanced">Advanced</label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <label>Focus Areas</label><br>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="speaking" id="focusSpeaking">
-                                            <label class="form-check-label" for="focusSpeaking"><i class="fas fa-comments"></i> Speaking</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="listening" id="focusListening">
-                                            <label class="form-check-label" for="focusListening"><i class="fas fa-headphones-alt"></i> Listening</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="writing" id="focusWriting">
-                                            <label class="form-check-label" for="focusWriting"><i class="fas fa-pencil-alt"></i> Writing</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="reading" id="focusReading">
-                                            <label class="form-check-label" for="focusReading"><i class="fas fa-book-open"></i> Reading</label>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <div class="form-group">
-                                        <label for="personalInterests">Personal Interests</label>
-                                        <textarea class="form-control" id="personalInterests" rows="3" placeholder="Describe your interests..."></textarea>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row gutters">
-                                <div class="col-xl-6 col-lg-6 col-md-6 col-sm-6 col-12">
-                                    <div class="form-group">
-                                        <label>Languages</label><br>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="english" id="languageEnglish">
-                                            <label class="form-check-label" for="languageEnglish"><i class="fas fa-globe"></i> English</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="french" id="languageFrench">
-                                            <label class="form-check-label" for="languageFrench"><i class="fas fa-globe"></i> French</label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" value="spanish" id="languageSpanish">
-                                            <label class="form-check-label" for="languageSpanish"><i class="fas fa-globe"></i> Spanish</label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Save Button -->
-                            <div class="row gutters">
-                                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
-                                    <div class="text-right">
-                                        <button type="button" id="saveButton" class="btn btn-primary">Save</button>
-                                    </div>
-                                </div>
-                            </div>
+                <!-- Difficulty Level Section -->
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <h6 style="color:#4D1193;">Difficulty Level</h6>
+                    <div class="form-group">
+                        <div class="form-check" style="color:#4D1193;">
+                            <input class="form-check-input" type="radio" value="beginner" id="difficultyBeginner" name="difficulty" <?php echo ($difficulty == 'beginner') ? 'checked' : ''; ?> required>
+                            <label class="form-check-label" for="difficultyBeginner">Beginner</label>
+                        </div>
+                        <div class="form-check" style="color:#4D1193;">
+                            <input class="form-check-input" type="radio" value="intermediate" id="difficultyIntermediate" name="difficulty" <?php echo ($difficulty == 'intermediate') ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="difficultyIntermediate">Intermediate</label>
+                        </div>
+                        <div class="form-check" style="color:#4D1193;">
+                            <input class="form-check-input" type="radio" value="advanced" id="difficultyAdvanced" name="difficulty" <?php echo ($difficulty == 'advanced') ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="difficultyAdvanced">Advanced</label>
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Modal for displaying selected options -->
-        <div class="modal fade" id="selectionModal" tabindex="-1" role="dialog" aria-labelledby="selectionModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="selectionModalLabel">Your Selections</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
+                <!-- Focus Areas Section -->
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <h6 style="color:#4D1193;">Focus Areas</h6>
+                    <div class="form-group">
+                        <div class="form-check" style="color:#4D1193;">
+                            <input class="form-check-input" type="radio" name="focusArea" value="grammar" id="focusGrammar" <?php echo ($focusArea == 'grammar') ? 'checked' : ''; ?> required>
+                            <label class="form-check-label" for="focusGrammar">Grammar</label>
+                        </div>
+                        <div class="form-check" style="color:#4D1193;">
+                            <input class="form-check-input" type="radio" name="focusArea" value="vocabulary" id="focusVocabulary" <?php echo ($focusArea == 'vocabulary') ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="focusVocabulary">Vocabulary</label>
+                        </div>
+                        <div class="form-check" style="color:#4D1193;">
+                            <input class="form-check-input" type="radio" name="focusArea" value="writing" id="focusWriting" <?php echo ($focusArea == 'writing') ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="focusWriting">Writing</label>
+                        </div>
                     </div>
-                    <div class="modal-body" id="modalBody">
-                        <!-- Selected options will be populated here -->
+                </div>
+
+                <!-- Personal Interests Section -->
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <h6 style="color:#4D1193;">Personal Interests</h6>
+                    <div class="form-group">
+                        <textarea class="form-control" id="personalInterests" name="personalInterests" rows="3" placeholder="Describe your interests..."><?php echo htmlspecialchars($personalInterests); ?></textarea>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+
+                <!-- Languages Section -->
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <h6 style="color:#4D1193;">Languages</h6>
+                    <div class="form-group">
+                        <div class="form-check" style="color:#4D1193;">
+                            <input class="form-check-input" type="radio" value="english" id="languageEnglish" name="languages" <?php echo ($language == 'english') ? 'checked' : ''; ?> required>
+                            <label class="form-check-label" for="languageEnglish">English</label>
+                        </div>
+                        <div class="form-check" style="color:#4D1193;">
+                            <input class="form-check-input" type="radio" value="french" id="languageFrench" name="languages" <?php echo ($language == 'french') ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="languageFrench">French</label>
+                        </div>
+                        <div class="form-check" style="color:#4D1193;">
+                            <input class="form-check-input" type="radio" value="spanish" id="languageSpanish" name="languages" <?php echo ($language == 'spanish') ? 'checked' : ''; ?>>
+                            <label class="form-check-label" for="languageSpanish">Spanish</label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12">
+                    <div class="text-right" style="color:#4D1193;">
+                        <button type="submit" id="saveButton" class="btn btn-primary">Save</button>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
 
-        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.bundle.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                $('#saveButton').click(function() {
-                 
-                    const difficulty = [];
-                    $('input[type="checkbox"]:checked').each(function() {
-                        if ($(this).attr('id').startsWith('difficulty')) {
-                            difficulty.push($(this).val());
-                        }
-                    });
-
-                    const focusAreas = [];
-                    $('input[type="checkbox"]:checked').each(function() {
-                        if ($(this).attr('id').startsWith('focus')) {
-                            focusAreas.push($(this).val());
-                        }
-                    });
-
-                    const languages = [];
-                    $('input[type="checkbox"]:checked').each(function() {
-                        if ($(this).attr('id').startsWith('language')) {
-                            languages.push($(this).val());
-                        }
-                    });
-
-                    const interests = $('#personalInterests').val();
-
-                   
-                    $('#modalBody').html(`
-                        <p><strong>Difficulty Level:</strong> ${difficulty.join(', ') || 'None'}</p>
-                        <p><strong>Focus Areas:</strong> ${focusAreas.join(', ') || 'None'}</p>
-                        <p><strong>Languages:</strong> ${languages.join(', ') || 'None'}</p>
-                        <p><strong>Personal Interests:</strong> ${interests || 'None'}</p>
-                    `);
-
-               
-                    $('#selectionModal').modal('show');
-                });
-            });
-        </script>
+        <?php if (isset($_SESSION['update_message'])): ?>
+            <div id="popupAlert" class="popup-alert">
+                <div class="popup-content">
+                    <p><?php echo $_SESSION['update_message']; ?></p>
+                    <button id="closePopup" class="popup-close-btn">Close</button>
+                </div>
+            </div>
+            <?php unset($_SESSION['update_message']); ?>  
+        <?php endif; ?>
     </div>
-</body>
+</div>
 
+<script src="../public/js/userProfile.js"></script>
+
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="../public/js/userProfile.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.1.1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
 </html>

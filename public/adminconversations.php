@@ -1,199 +1,163 @@
 <?php
-include '../Language-Learning-Chatbot/controllers/restrict.php';
-restrictPageAccess('admin', '../public/home.php'); // Redirect non-admin users to home page
+include '../Language-Learning-Chatbot/controllers/AdminChatInteractionController.php';
+$adminChat = new AdminChatInteractionController();
+$result = $adminChat->getChatMessages();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot Admin Dashboard</title>
-    <!-- ======= Styles ====== -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Sharp:opsz,wght,FILL,GRAD@48,400,0,0" />
     <link rel="stylesheet" href="../public/css/styleadmin.css">
     <link rel="stylesheet" href="../public/css/admintable.css">
-</head>
+    <style>
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0, 0, 0, 0.75); 
+    padding-top: 60px;
+    backdrop-filter: blur(5px); /* Subtle blur effect */
+}
 
+.modal-content {
+    background-color: #f9f9f9;
+    margin: auto; 
+    padding: 30px;
+    border-radius: 12px; /* Smooth rounded corners */
+    width: 90%; 
+    max-width: 500px; 
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Modern shadow */
+    animation: slideIn 0.3s ease-out; /* Slide-in animation */
+    position: relative;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.close {
+    color: #555;
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #e74c3c; /* Highlight on hover */
+}
+
+.modal-content h2 {
+    margin-bottom: 15px;
+    font-size: 22px;
+    color: #2c3e50;
+}
+
+.modal-content p {
+    color: #34495e;
+    line-height: 1.8;
+    font-size: 16px;
+    margin: 10px 0;
+}
+
+.modal-content strong {
+    color: #2c3e50;
+    font-weight: bold;
+}
+
+    </style>
+    <script>
+        function showHistory(message, response) {
+            document.getElementById('modalMessage').innerText = message;
+            document.getElementById('modalResponse').innerText = response;
+            document.getElementById('myModal').style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById('myModal').style.display = "none";
+        }
+
+        // Close the modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('myModal');
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+    </script>
+</head>
 <body>
-    <!-- =============== Navigation ================ -->
     <?php include "../Language-Learning-Chatbot/views/partials/adminnavbar.php"; ?>
-<!------------------------------ User Management Section ---------------------------->
-            <section>
-                <div class="user-management">
-                
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>User Name</th>
-                                <th>Role</th>
-                                <th>Language</th>
-                                <th>Email</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="user-list">
-                            <tr>
-                                <td>John Doe</td>
-                                <td>Student</td>
-                                <td>English</td>
-                                <td>john@example.com</td>
-                                <td>
-                                    <button onclick="showChatHistory(0)">Chat History</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Jane Smith</td>
-                                <td>Tutor</td>
-                                <td>Spanish</td>
-                                <td>jane@example.com</td>
-                                <td>
-                                    <button onclick="showChatHistory(1)">Chat History</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Michael Johnson</td>
-                                <td>Student</td>
-                                <td>French</td>
-                                <td>michael@example.com</td>
-                                <td>
-                                    <button onclick="showChatHistory(2)">Chat History</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Emily Davis</td>
-                                <td>Tutor</td>
-                                <td>German</td>
-                                <td>emily@example.com</td>
-                                <td>
-                                    <button onclick="showChatHistory(3)">Chat History</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>James Brown</td>
-                                <td>Student</td>
-                                <td>Mandarin</td>
-                                <td>james@example.com</td>
-                                <td>
-                                    <button onclick="showChatHistory(4)">Chat History</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Alice Wilson</td>
-                                <td>Tutor</td>
-                                <td>English</td>
-                                <td>alice@example.com</td>
-                                <td>
-                                    <button onclick="showChatHistory(5)">Chat History</button>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>David Miller</td>
-                                <td>Student</td>
-                                <td>Spanish</td>
-                                <td>david@example.com</td>
-                                <td>
-                                    <button onclick="showChatHistory(6)">Chat History</button>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                
-                <div id="chatModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close" id="closeModal">&times;</span>
-                        <h2>Chat History</h2>
-                        <div id="chat-history">
-                           
-                        </div>
-                    </div>
-                </div>
-                
+    <section>
+        <div class="user-management">
+            <h2>Chatbot Interactions</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>User Name</th>
+                        <th>Role</th>
+                        <th>Language</th>
+                        <th>Email</th>
+                        <th>History</th>
+                    </tr>
+                </thead>
+                <tbody id="user-list">
+                    <?php
+                    if ($result->num_rows > 0) {
+                        while ($row = $result->fetch_assoc()) {
+                            echo "<tr>
+                                    <td>{$row['username']}</td>
+                                    <td>{$row['role']}</td>
+                                    <td>{$row['language']}</td>
+                                    <td>{$row['email']}</td>
+                                    <td>
+                                        <button onclick=\"showHistory('".addslashes($row['message'])."', '".addslashes($row['response'])."')\">View History</button>
+                                    </td>
+                                  </tr>";
+                        }
+                    } else {
+                        echo "<tr><td colspan='5'>No chat messages found.</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Chat History</h2>
+            <p><strong>Message:</strong> <span id="modalMessage"></span></p>
+            <p><strong>Response:</strong> <span id="modalResponse"></span></p>
+        </div>
     </div>
 
     <script src="https://unpkg.com/ionicons@5.5.2/dist/ionicons.js"></script>
     <script src="../public/js/adminmainjs.js"></script>
-    <script>
-      const userForm = document.getElementById('user-form');
-const userList = document.getElementById('user-list');
-const chatModal = document.getElementById('chatModal');
-const closeModal = document.getElementById('closeModal');
-const chatHistoryDiv = document.getElementById('chat-history');
-const users = [
-    {
-        name: "John Doe",
-        role: "Student",
-        language: "English",
-        email: "john@example.com",
-        chatHistory: [
-            "What is the best way to learn a new language?",
-            "Can you recommend some good resources for Spanish?"
-        ]
-    },
-    {
-        name: "Jane Smith",
-        role: "Tutor",
-        language: "Spanish",
-        email: "jane@example.com",
-        chatHistory: [
-            "Hello! How can I assist you today?",
-            "Do you need help with grammar?"
-        ]
-    },
-    {
-        name: "Michael Johnson",
-        role: "Student",
-        language: "French",
-        email: "michael@example.com",
-        chatHistory: [
-            "How can I improve my speaking skills?",
-            "What are some tips for pronunciation?"
-        ]
-    },
-];
-
-function showChatHistory(index) {
-    const user = users[index];
-    chatHistoryDiv.innerHTML = user.chatHistory.map(message => `<p>${message}</p>`).join('');
-    chatModal.style.display = "block";
-}
-
-closeModal.onclick = function() {
-    chatModal.style.display = "none";
-}
-
-window.onclick = function(event) {
-    if (event.target == chatModal) {
-        chatModal.style.display = "none";
-    }
-}
-
-userForm.addEventListener('submit', function(event) {
-    event.preventDefault();
-    const newUser = {
-        name: document.getElementById('username').value,
-        role: document.getElementById('role').value,
-        language: document.getElementById('language').value,
-        email: document.getElementById('email').value,
-        chatHistory: [] // Initialize with empty chat history
-    };
-    users.push(newUser);
-    const newRow = `<tr>
-                        <td>${newUser.name}</td>
-                        <td>${newUser.role}</td>
-                        <td>${newUser.language}</td>
-                        <td>${newUser.email}</td>
-                        <td>
-                            <button onclick="showChatHistory(${users.length - 1})">Chat History</button>
-                        </td>
-                    </tr>`;
-    userList.insertAdjacentHTML('beforeend', newRow);
-    userForm.reset(); 
-});
-
-    </script>
 </body>
-
 </html>
+
+<?php
+$adminChat->closeConnection();
+?>
