@@ -1,4 +1,5 @@
 <?php
+//namespace LanguageLearningChatbot;
 require_once __DIR__ . '/../model/Model.php'; 
 
 class UserModel extends Model {
@@ -17,6 +18,14 @@ class UserModel extends Model {
         }
         // Return the single instance
         return self::$instance;
+    }
+    //Function For Testing
+    public function getUserById($userId) {
+        $query = "SELECT * FROM users WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $userId);
+        $stmt->execute();
+        return $stmt->get_result()->fetch_assoc();
     }
 
     public function handleProfileUpdate() {
