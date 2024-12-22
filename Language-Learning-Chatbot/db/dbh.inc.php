@@ -4,10 +4,12 @@ $username = "root";
 $password = "";
 $dbname = "llchatbot_db";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+if (!defined('TEST_ENVIRONMENT') || !TEST_ENVIRONMENT) {
+    $conn = new mysqli($servername, $username, $password, $dbname);
 
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
 }
 
 function checkUserRole($userId, $role, $conn) {
@@ -22,6 +24,5 @@ function checkUserRole($userId, $role, $conn) {
     return false;
 }
 
-return $conn;
-
+return isset($conn) ? $conn : null;
 ?>

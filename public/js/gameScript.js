@@ -17,6 +17,81 @@ function showVocabChallengePopup() {
 function openConfirmSubmitChallengePopup() {
     document.getElementById("confirmSubmitChallengePopup").style.display = "flex"; // Show the challenge popup
 }
+function openConfirmSubmitVocabChallengePopup() {
+    document.getElementById("confirmSubmitVocabChallengePopup").style.display = "flex"; // Show the challenge popup
+}
+document.getElementById("sendFeedback").addEventListener("click", sendMessage);
+document.getElementById("sendFeedback2").addEventListener("click", sendMessageB);
+
+function sendMessage() {
+    const messageInput = document.getElementById("challengeResponse");
+    const message = messageInput.value.trim();
+
+    if (message !== "") {
+        fetch("../Language-Learning-Chatbot/controllers/ChallengesController.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({ message: message }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+                // Display error message or handle accordingly
+            } else {
+                const botReply = document.getElementById("aiFeedback");
+                botReply.textContent = data.reply;
+            }
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+        });
+    } else {
+        alert("Message is required.");
+    }
+}
+function sendMessageB() {
+    const messageInput = document.getElementById("challengeResponse2");
+    const message = messageInput.value.trim();
+
+    if (message !== "") {
+        fetch("../Language-Learning-Chatbot/controllers/ChallengesController.php", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({ message: message }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.error) {
+                console.error(data.error);
+                // Display error message or handle accordingly
+            } else {
+                const botReply = document.getElementById("aiFeedback2");
+                botReply.textContent = data.reply;
+            }
+        })
+        .catch(error => {
+            console.error("Fetch error:", error);
+        });
+    } else {
+        alert("Message is required.");
+    }
+}
+
 
 let isSubmitted = false;
 function confirmCancel() {
@@ -37,8 +112,18 @@ function closeBothPopups() {
     closePopup(); // Close the quiz popup
     closeConfirmPopup(); // Close the confirmation popup
     closeChallengePopup()
+    const form = document.getElementById('quizForm');
+    if (form) {
+        form.reset(); // This will clear all input fields
+    }
+
+    // Optionally reload the page to clear any PHP-generated feedback
+    window.location.href = window.location.pathname;
 }
 function submitQuiz() {
+
+    const quizForm = document.getElementById('quizForm');
+    quizForm.submit(); 
     // Close the confirm submit popup
     closeConfirmSubmitPopup()
 
@@ -50,9 +135,13 @@ function submitQuiz() {
     quizButtons.innerHTML = '<button type="button" onclick="closePopup()">Close</button>';
     
 }
-function submitChallenge(){
+function submitGrammarChallenge(){
     closeConfirmSubmitChallengePopup();
-    document.getElementById("scorePopup").style.display = "flex";
+    document.getElementById("GrammarscorePopup").style.display = "flex";
+}
+function submitVocabChallenge(){
+    closeConfirmSubmitVocabChallengePopup();
+    document.getElementById("VocabscorePopup").style.display = "flex";
 }
 
 
@@ -290,6 +379,7 @@ const associationWords = [
 
 function closePopup() {
     document.getElementById("popupOverlay").style.display = "none"; 
+    
 }
 function closeConfirmPopup() {
     document.getElementById("confirmPopup").style.display = "none"; 
@@ -301,6 +391,12 @@ function closeConfirmSubmitPopup() {
 function closeScorePopup() {
     document.getElementById("scorePopup").style.display = "none";
 }
+function closeGrammarScorePopup() {
+    document.getElementById("GrammarscorePopup").style.display = "none";
+}
+function closeVocabScorePopup() {
+    document.getElementById("VocabscorePopup").style.display = "none";
+}
 
 function closeGamesPopup() {
     document.getElementById("gamespopupOverlay").style.display = "none";
@@ -311,4 +407,21 @@ function closeChallengePopup() {
 }
 function closeConfirmSubmitChallengePopup(){
     document.getElementById("confirmSubmitChallengePopup").style.display = "none";
+}
+function closeConfirmSubmitVocabChallengePopup(){
+    document.getElementById("confirmSubmitVocabChallengePopup").style.display = "none";
+}
+
+function handleChallengeResponse(response) {
+    const feedbackSection = document.getElementById('feedbackSection');
+    const feedbackText = document.getElementById('aiFeedback');
+    const scoreText = document.getElementById('aiScore');
+
+    if (response.success) {
+        feedbackText.innerText = response.feedback;
+        scoreText.innerText = response.score;
+        feedbackSection.style.display = 'block'; // Show feedback section
+    } else {
+        alert('Error: ' + response.message);
+    }
 }
