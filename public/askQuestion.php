@@ -79,7 +79,7 @@ $topUsers = $forumModel->getTopUsers();
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="../public/forum.php">Home</a></li>
                         <li><a href="../public/askQuestion.php">Ask Question</a></li>
-                        <li><a href="../public/resources.php">Resources</a></li>
+                        <li><a href="../public/category.php">Resources</a></li>
             </div>
         </nav>
     </div>

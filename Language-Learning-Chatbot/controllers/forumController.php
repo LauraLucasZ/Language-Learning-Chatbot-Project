@@ -30,5 +30,11 @@ class forumController {
         exit();
     }
     
+    public function getQuestionsByCategory($category) {
+        return $this->forumModel->getQuestionsByCategory($category);
+        
+    }
+    
+    
 }
 ?>
