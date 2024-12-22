@@ -5,7 +5,7 @@ require_once '../Language-Learning-Chatbot/controllers/UserController.php';
 require_once '../Language-Learning-Chatbot/model/UserModel.php';
 require_once '../Language-Learning-Chatbot/db/dbh.inc.php';
 
-$userModel = new UserModel($conn);
+$userModel = UserModel::getInstance($conn);
 $userController = new UserController($userModel);
 $userController->edit();
 

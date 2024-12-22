@@ -1,4 +1,11 @@
-<?php include '../Language-Learning-Chatbot/controllers/askQuestionController.php';?>
+<?php 
+include '../Language-Learning-Chatbot/controllers/askQuestionController.php';
+require_once __DIR__ . '/../Language-Learning-Chatbot/model/forumModel.php';
+
+
+$forumModel = new forumModel();
+$topUsers = $forumModel->getTopUsers();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -46,25 +53,20 @@
 </style>
 
 <body>
-    <div class="top-bar">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="navbar-serch-right-side">
-                        <form class="navbar-form" role="search">
-                            <div class="input-group add-on">
-                                <input class="form-control form-control222" placeholder="Search" name="srch-term" id="srch-term" type="text">
-                                <div class="input-group-btn">
-                                    <button class="btn btn-default btn-default2913" type="submit"><i class="glyphicon glyphicon-search"></i></button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-               
-                </div>
+<!--======== Navbar =======-->
+<div class="top-bar">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <!-- Back button with conditional logic based on user role -->
+                <button type="button" style="background-color:#5b428f; color: white; border: none; padding: 10px 20px; font-size: 16px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; transition: transform 0.3s, box-shadow 0.3s;" onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 0 10px rgba(255, 255, 255, 0.6)';" onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='none';" onclick="goBack()">
+                    <span class="glyphicon glyphicon-arrow-left" style="margin-right: 5px;"></span> Back
+                </button>
             </div>
         </div>
     </div>
+</div>
+
     <div class="top-menu-bottom932">
         <nav class="navbar navbar-default">
             <div class="container">
@@ -77,7 +79,7 @@
                     <ul class="nav navbar-nav navbar-right">
                         <li><a href="../public/forum.php">Home</a></li>
                         <li><a href="../public/askQuestion.php">Ask Question</a></li>
-                        <li><a href="../public/resources.php">Resources</a></li>
+                        <li><a href="../public/category.php">Resources</a></li>
             </div>
         </nav>
     </div>
@@ -146,79 +148,23 @@
              </div>
            
 <!--              highest points-->
-              <div class="highest-part302">
-                <h4>Highest Points</h4>  
-                <div class="pints-wrapper">
-                 <div class="left-user3898">
-                     <a href="#"><img src="./images/boy.png" alt="Image"></a>
-                     <div class="imag-overlay39">
-                         <a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                     </div>
-                 </div>
-                 <span class="points-details938">
-                     <a href="#"><h5>ahmed2002</h5></a>
-                    <br>
-                 </span>
-                 
-                  </div>
-                  <hr>
-                           <div class="pints-wrapper">
-                 <div class="left-user3898">
-                     <a href="#"><img src="./images/girl.png" alt="Image"></a>
-                     <div class="imag-overlay39">
-                         <a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                     </div>
-                 </div>
-                 <span class="points-details938">
-                     <a href="#"><h5>emily05</h5></a>
-                    <br>
-                 </span>
-                 
-                  </div>
-                  <hr>
-                           <div class="pints-wrapper">
-                 <div class="left-user3898">
-                     <a href="#"><img src="./images/girl.png" alt="Image"></a>
-                     <div class="imag-overlay39">
-                         <a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                     </div>
-                 </div>
-                 <span class="points-details938">
-                     <a href="#"><h5>dalia77</h5></a>
-                     <br>
-                 </span>
-                 
-                  </div>
-                  <hr>
-                  <div class="pints-wrapper">
-                 <div class="left-user3898">
-                     <a href="#"><img src="./images/boy.png" alt="Image"></a>
-                     <div class="imag-overlay39">
-                         <a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                     </div>
-                 </div>
-                 <span class="points-details938">
-                     <a href="#"><h5>liam099</h5></a>
-                     <br>
-                 </span>
-                 
-                  </div>
-                  <hr>
-                  <div class="pints-wrapper">
-                 <div class="left-user3898">
-                     <a href="#"><img src="./images/girl.png" alt="Image"></a>
-                     <div class="imag-overlay39">
-                         <a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a>
-                     </div>
-                 </div>
-                 <span class="points-details938">
-                     <a href="#"><h5>alice05</h5></a>
-                     <br>
-                 </span>
-                 
-                  </div>
-                  
-              </div>
+<div class="highest-part302">
+    <h4>Top Users</h4>
+    <?php foreach ($topUsers as $user): ?>
+        <div class="pints-wrapper">
+            <div class="left-user3898">
+                <a href="#"><img src="<?php echo htmlspecialchars($user['profileImage']); ?>" alt="Image"></a>
+                <div class="imag-overlay39"> <a href="#"><i class="fa fa-plus" aria-hidden="true"></i></a> </div>
+            </div>
+            <span class="points-details938">
+                <a href="#"><h5><?php echo htmlspecialchars($user['username']); ?></h5></a>
+                <br>
+                <small>Posts: <?php echo $user['postsCount']; ?></small>
+            </span>
+        </div>
+        <hr>
+    <?php endforeach; ?>
+</div>
 <!--               end of Highest points -->
 <!--          start tags part-->
 <div class="tags-part2398">
@@ -240,6 +186,17 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
       <script src="../public/js/askQuestion.js"></script>
   
+      <script>
+function goBack() {
+    // Check if the user's role is 'tutor' from the session
+    <?php if (isset($_SESSION['role']) && $_SESSION['role'] === 'tutor'): ?>
+        window.location.href = 'login.php'; // Redirect to login page for tutor
+    <?php else: ?>
+        window.location.href = 'home.php'; // Redirect to forum.php (home page)
+    <?php endif; ?>
+}
+</script>
+
 </body>
 
 </html>

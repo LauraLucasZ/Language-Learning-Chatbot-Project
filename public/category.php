@@ -15,6 +15,11 @@ $topUsers = $forumModel->getTopUsers();
 $sessionUserId = $_SESSION['userId'];
 $userQuestions = $forumController->loadUserQuestions($sessionUserId);
 
+$category = isset($_GET['category']) ? $_GET['category'] : 'all';  // Default to 'all' if no category is selected
+
+$forumController = new forumController();
+$filteredQuestions = $forumController->getQuestionsByCategory($category);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['like_post_id'])) {
     $forumController->likePost($_POST['like_post_id']);
 }
@@ -90,7 +95,7 @@ function timeAgo($datetime) {
                 <ul class="nav navbar-nav navbar-right">
                     <li><a href="../public/forum.php">Home</a></li>
                     <li><a href="../public/askQuestion.php">Ask Question</a></li>
-                    <li><a href="../public/category.php">Category</a></li>
+                    <li><a href="../public/resources.php">Category</a></li>
                 </ul>
             </div>
         </div>
@@ -136,94 +141,36 @@ function timeAgo($datetime) {
             <div class="col-md-9">
                 <div id="main">
                     <input id="tab1" type="radio" name="tabs" checked>
-                    <label for="tab1">All Questions</label>
-                    <input id="tab2" type="radio" name="tabs">
-                    <label for="tab2">Your Questions</label>
-                  
-                    <!-- Content Section 1 - All Questions -->
-                    <section id="content1">
-                        <?php if (!empty($questions)): ?>
-                            <?php foreach ($questions as $question): ?>
-                                <div class="question-type2033" data-post-id="<?php echo $question['post_id']; ?>" id="<?php echo $question['post_id']; ?>">
-                                    <div class="row">
-                                        <div class="col-md-1">
-                                            <div class="left-user12923 left-user12923-repeat">
-                                                <img src="<?php echo htmlspecialchars($question['profileImage']); ?>" alt="Profile Image">
-                                                <a href="#"><i class="fa fa-check" aria-hidden="true"></i></a>
-                                                <p style="text-align: center; font-size: 12px; margin-top: 5px;"><?php echo htmlspecialchars($question['username']); ?></p>
-                                                <p style="text-align: center; font-size: 10px; margin-top: 5px; font-weight:bold"><?php echo htmlspecialchars($question['role']); ?></p>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-9">
-                                            <div class="right-description893">
-                                                <div id="que-hedder2983">
-                                                    <h3><a href="#" target="_blank"><?php echo htmlspecialchars($question['title']); ?></a></h3>
-                                                </div>
-                                                <div class="ques-details10018">
-                                                    <p><?php echo htmlspecialchars($question['content']); ?></p>
-                                                </div>
-                                                <hr>
-                                                    <div class="ques-icon-info3293">
-                                                                                                    
-                                                <span><?php echo $question['likes']; ?></span>
-                                                <form method="POST" class="like-form" id="like-form-<?php echo $question['post_id']; ?>">
-                                                <input type="hidden" name="like_post_id" value="<?php echo $question['post_id']; ?>">
-                                                <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
-                                                    <i class="fa fa-star" aria-hidden="true"></i> Like
-                                                </button>
-                                            </form>
-                                                <a href="#"><i class="fa fa-folder" aria-hidden="true"> <?php echo htmlspecialchars($question['category']); ?></i></a>
-                                                <a href="#"><i class="fa fa-clock-o" aria-hidden="true"> <?php echo timeAgo($question['created_at']); ?></i></a>
-                                                <a href="#" class="toggle-comment"><i class="fa fa-question-circle-o" aria-hidden="true"> Comment</i></a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <div class="ques-type302">
-                                                <button type="button" class="q-type238"><i class="fa fa-comment" aria-hidden="true"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="comments-section" style="display: none;">
-                                        <form action="../Language-Learning-Chatbot/controllers/submit_comment.php" method="POST">
-                                            <textarea class="form-control mt-2" name="comment_text" placeholder="Write your comment here..." rows="2"></textarea>
-                                            <input type="hidden" name="post_id" value="<?php echo $question['post_id']; ?>">
-                                            <button type="submit" class="btn btn-comment btn-sm mt-2">Post Comment</button>
-                                        </form>
-                                        <br>
-                                    </div>
-                                    <br>
-                                    <div class="comments-lists" style="background: linear-gradient(to bottom,#f0f0f0, #e6e6ff); padding: 20px; border-radius: 10px; display:block;">
-                                        <?php
-                                        $comments = $commentController->getCommentsForPost($question['post_id']);
-                                        if (!empty($comments)):
-                                            foreach ($comments as $comment): ?>
-                                                <div class="comment" style="display: flex; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #e0e0e0;">
-                                                    <div style="flex-shrink: 0; margin-right: 10px;">
-                                                        <img src="<?php echo htmlspecialchars($comment['profileImage']); ?>" alt="Profile Image" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
-                                                    </div>
-                                                    <div>
-                                                        <p style="margin: 0; font-weight: bold;"><?php echo htmlspecialchars($comment['username']); ?></p>
-                                                        <p style="margin: 0; font-size: 12px; color: grey;"><?php echo timeAgo($comment['created_at']); ?></p>
-                                                        <p style="margin-top: 10px;"><?php echo htmlspecialchars($comment['comment_text']); ?></p>
-                                                    </div>
-                                                </div>
-                                            <?php endforeach; 
-                                        else: ?>
-                                            <p>No comments yet. Be the first to comment!</p>
-                                        <?php endif; ?>
-                                    </div>
-                                </div>
-                            <?php endforeach; ?>
-                        <?php else: ?>
-                            <p>No questions have been posted yet. Be the first to ask!</p>
-                        <?php endif; ?>
-                    </section>
+                    <label for="tab1">Category</label>
 
-                    <!-- Content Section 2 - Your Questions -->
-                    <section id="content2">
-                    <?php if (!empty($userQuestions)): ?>
-    <?php foreach ($userQuestions as $question): ?>
+                    <section id="content1"> 
+   
+                    <form method="GET" action="category.php" id="category-form" style="display: inline-block; position: relative;">
+
+    <select name="category" id="category-select" onchange="this.form.submit()" 
+            style="padding: 10px 15px; font-size: 16px; color: #333; border: 1px solid #ccc; 
+                   border-radius: 5px; width: 220px; cursor: pointer; background-color: #f7f7f7; 
+                   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); transition: all 0.3s ease; 
+                   appearance: none; -webkit-appearance: none; -moz-appearance: none;">
+        
+        <option value="all" <?php echo isset($_GET['category']) && $_GET['category'] == 'all' ? 'selected' : ''; ?>>All Categories</option>
+        <option value="English" <?php echo isset($_GET['category']) && $_GET['category'] == 'English' ? 'selected' : ''; ?>>English</option>
+        <option value="French" <?php echo isset($_GET['category']) && $_GET['category'] == 'French' ? 'selected' : ''; ?>>French</option>
+        <option value="Spanish" <?php echo isset($_GET['category']) && $_GET['category'] == 'Spanish' ? 'selected' : ''; ?>>Spanish</option>
+    </select>
+
+    <!-- Custom arrow -->
+    <div style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); pointer-events: none;">
+        <i class="fa fa-chevron-down" style="font-size: 16px; color: #666;"></i>
+    </div>
+    
+</form>
+
+<br>
+<br>
+
+<?php if (!empty($filteredQuestions)): ?>
+    <?php foreach ($filteredQuestions as $question): ?>
         <div class="question-type2033" data-post-id="<?php echo $question['post_id']; ?>" id="<?php echo $question['post_id']; ?>">
             <div class="row">
                 <div class="col-md-1">
@@ -244,17 +191,17 @@ function timeAgo($datetime) {
                         </div>
                         <hr>
                         <div class="ques-icon-info3293">
-                                <span><?php echo $question['likes']; ?></span> <!-- Display the likes count -->
-                                <form method="POST" class="like-form" id="like-form-<?php echo $question['post_id']; ?>">
-                                    <input type="hidden" name="like_post_id" value="<?php echo $question['post_id']; ?>">
-                                    <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
-                                        <i class="fa fa-star" aria-hidden="true"></i> Like
-                                    </button>
-                                </form>
-                                <a href="#"><i class="fa fa-folder" aria-hidden="true"> <?php echo htmlspecialchars($question['category']); ?></i></a>
-                                                <a href="#"><i class="fa fa-clock-o" aria-hidden="true"> <?php echo timeAgo($question['created_at']); ?></i></a>
-                                                <a href="#" class="toggle-comment"><i class="fa fa-question-circle-o" aria-hidden="true"> Comment</i></a>
-    </div>
+                            <span><?php echo $question['likes']; ?></span>
+                            <form method="POST" class="like-form" id="like-form-<?php echo $question['post_id']; ?>">
+                                <input type="hidden" name="like_post_id" value="<?php echo $question['post_id']; ?>">
+                                <button type="submit" style="background: none; border: none; padding: 0; cursor: pointer;">
+                                    <i class="fa fa-star" aria-hidden="true"></i> Like
+                                </button>
+                            </form>
+                            <a href="#"><i class="fa fa-folder" aria-hidden="true"> <?php echo htmlspecialchars($question['category']); ?></i></a>
+                            <a href="#"><i class="fa fa-clock-o" aria-hidden="true"> <?php echo timeAgo($question['created_at']); ?></i></a>
+                            <a href="#" class="toggle-comment"><i class="fa fa-question-circle-o" aria-hidden="true"> Comment</i></a>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-2">
@@ -266,10 +213,7 @@ function timeAgo($datetime) {
             <div class="comments-section" style="display: none;">
                 <form action="../Language-Learning-Chatbot/controllers/submit_comment.php" method="POST">
                     <textarea class="form-control mt-2" name="comment_text" placeholder="Write your comment here..." rows="2"></textarea>
-                    <!-- Set post_id dynamically from session -->
                     <input type="hidden" name="post_id" value="<?php echo $question['post_id']; ?>">
-                    <!-- Set user_id dynamically from session -->
-                    <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id']; ?>"> <!-- Assuming the session contains 'user_id' -->
                     <button type="submit" class="btn btn-comment btn-sm mt-2">Post Comment</button>
                 </form>
                 <br>
@@ -301,9 +245,10 @@ function timeAgo($datetime) {
     <p>No questions have been posted yet. Be the first to ask!</p>
 <?php endif; ?>
 
-                    </section>
-                        </div>
-                        </div>
+</section>
+
+</div>
+</div>    
 
                 <!--end of col-md-9 -->
                 <!--strart col-md-3 (side bar)-->
@@ -374,17 +319,6 @@ function goBack() {
     <?php endif; ?>
 }
 
-function redirectToCategorySection() {
-    var selectedCategory = document.getElementById('category-select').value;
-    var url = new URL(window.location.href);
-    url.searchParams.set('category', selectedCategory); // Set the selected category as a query parameter
-    window.location.href = url.toString(); // Redirect to the same page with the updated category
-
-    // Optionally scroll to the dropdown section (after the page reloads)
-    window.onload = function() {
-        document.getElementById('category-form').scrollIntoView({ behavior: 'smooth' });
-    };
-}
 
 </script>
 
