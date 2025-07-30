@@ -51,10 +51,11 @@
 
 ## 🧪 Tech Stack
 
-- **Frontend:** HTML, CSS, JavaScript  
-- **Backend:** PHP  
-- **Database:** MySQL  
-- **AI Integration:** OpenAI GPT API
+[![Frontend](https://img.shields.io/badge/Frontend-HTML%2C%20CSS%2C%20JS-blue?style=for-the-badge&logo=html5)](#)  
+[![Backend](https://img.shields.io/badge/Backend-PHP-777bb4?style=for-the-badge&logo=php)](#)  
+[![Database](https://img.shields.io/badge/Database-MySQL-00758f?style=for-the-badge&logo=mysql)](#)  
+[![AI](https://img.shields.io/badge/OpenAI-GPT--API-purple?style=for-the-badge&logo=openai)](#)
+
 
 ---
 
