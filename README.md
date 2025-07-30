@@ -1,70 +1,71 @@
 # 🧠 Chatrock – AI-Powered Language Learning Platform
 
-**Chatrock** is an AI-driven language learning chatbot platform designed to help users improve their language skills through real-time interactive conversations, personalized learning paths, and gamified experiences. Powered by the OpenAI API and built with PHP, MySQL, JavaScript, HTML, and CSS, Chatrock offers dynamic content, performance tracking, and engaging educational tools.
+**Chatrock** is an intelligent language learning platform that empowers users to enhance their language skills through real-time, interactive conversations with an AI chatbot. Blending personalized learning paths, gamified challenges, and progress tracking, Chatrock offers a fun, adaptive, and engaging experience. The platform is powered by the OpenAI API and built using PHP, MySQL, JavaScript, HTML, and CSS.
 
 ---
 
-## 🌟 Features
+## 🌟 Key Features
 
-- ✨ Real-time language practice with an OpenAI-powered chatbot
-- 🎮 Gamified learning experience (quizzes, challenges, vocabulary games, reading)
-- 📈 Progress tracking with detailed dashboards
-- 🧠 Personalized learning paths based on user needs
-- 👥 Admin panel for managing users (add/update/delete)
-- 🔐 User registration and role-based authentication (students, instructors, admins)
-- 📚 Grammar and vocabulary training modules
-- 📃 Reading tasks with built-in note-taking
+- 💬 Real-time conversation practice using OpenAI’s language model
+- 🎯 Personalized learning paths that adapt to user progress and goals
+- 🎮 Gamified learning modules including quizzes, reading tasks, and vocabulary games
+- 📊 Progress tracking through dashboards and performance metrics
+- 🧩 Grammar and vocabulary training tailored to different levels
+- 📚 Interactive reading exercises with integrated note-taking
+- 👥 Admin panel for managing users and monitoring engagement
+- 🔐 Secure login and role-based authentication (students, instructors, admins)
 
 ---
 
 ## 🖼️ Screenshots
 
-## Landing Page
-![Landing](assets/landing_page1.png)
-![Landing](assets/landing_page2.png)
-![Landing](assets/landing_page3.png)
-![Landing](assets/landing_page4.png)
+### 🚀 Landing Page
+![Landing 1](assets/landing_page1.png)
+![Landing 2](assets/landing_page2.png)
+![Landing 3](assets/landing_page3.png)
+![Landing 4](assets/landing_page4.png)
 
-## Log-In
+### 🔐 Log In & Sign Up
 ![Login](assets/login.png)
-
-## Sign-Up
 ![Signup](assets/signup.png)
 
-## Home
-![Chat](assets/home.png)
-![Chat](assets/who_are_you_question.JPG)
-![Chat](assets/home_with_chat.png)
+### 🏠 Home & Chat Interface
+![Home](assets/home.png)
+![Question](assets/who_are_you_question.JPG)
+![Chatting](assets/home_with_chat.png)
 
-## Games Page
+### 🎮 Games & Training
 ![Games](assets/games_page.png)
-![Reading](assets/games.png)
-## Reading exercise
+![Training Modules](assets/games.png)
+
+### 📖 Reading Exercise
 ![Reading](assets/reading_exercise.png)
 
-## User Profile
+### 👤 User Profile
 ![Profile](assets/user_profile.JPG)
 
-## Admin Dashboard
+### 🛠️ Admin Dashboard
 ![Admin](assets/admin.png)
 
 ---
 
-## 🧪 Technologies Used
+## 🧪 Tech Stack
 
-- **Frontend**: HTML, CSS, JavaScript
-- **Backend**: PHP
-- **Database**: MySQL
-- **AI Integration**: OpenAI API
+- **Frontend:** HTML, CSS, JavaScript  
+- **Backend:** PHP  
+- **Database:** MySQL  
+- **AI Integration:** OpenAI GPT API
 
 ---
+
 ## 🔑 How It Works
 
-1. Users sign up and log in to the platform.
-2. The chatbot dynamically interacts with the user based on prompts.
-3. Challenges and activities are adjusted based on user performance.
-4. Progress is tracked and displayed in real-time dashboards.
-5. Admins can manage users and monitor system-wide performance.
+1. Users sign up and log in with secure credentials.
+2. The chatbot interacts in natural language, supporting learning through conversation.
+3. Users complete gamified tasks including quizzes, vocabulary games, and reading activities.
+4. Personalized paths and difficulty levels are adjusted based on performance.
+5. Dashboards help track individual learning progress.
+6. Admins manage platform users and oversee engagement via the admin panel.
 
 ---
 
